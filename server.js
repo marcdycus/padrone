@@ -18,16 +18,16 @@ app.use(express.static("public"));
 
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-mongoose.connect(MONGODB_URI);
+// mongoose.connect(MONGODB_URI);
 
-mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 app.get("/scrape", function(req, res) {
     axios.get("https://www.nytimes.com/").then(function(response) {
         var $ = cheerio.load(response.data);
         var results = [];
 
-        $(".css-6p6lnl").each(function(i, element) {
+        $(".eqveam60").each(function(i, element) {
             var title = $(element).text();
             var caption = $(element).find(".css-1pfq5u").text();
             var link = $(element).find('a').attr("href");
@@ -38,7 +38,7 @@ app.get("/scrape", function(req, res) {
                 link: link
             });
 
-            db.Article.create(result)
+            db.Article.create(results)
             .then(function(dbArticle) {
                 console.log(dbArticle);
             })
@@ -76,7 +76,7 @@ app.get("/articles/:id", function(req, res) {
 app.post("/articles/:id", function(req, res) {
     db.Note.create(req.body)
         .then(function(dbNote) {
-            return db.Article.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+            return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { note: dbNote._id } }, { new: true });
         })
         .then(function(dbArticle) {
             res.json(dbArticle);
@@ -84,6 +84,10 @@ app.post("/articles/:id", function(req, res) {
         .catch(function(err) {
             res.json(err);
         });
+});
+
+app.delete("/articles/:id", function(req, res) {
+    db.findOneAndRemove()
 });
 
 app.listen(PORT, function() {
