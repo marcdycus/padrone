@@ -16,31 +16,36 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
 // mongoose.connect(MONGODB_URI);
+mongoose.connect("mongodb://localhost/mongoHeadlines", { useNewUrlParser: true });
 
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+// mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 app.get("/scrape", function(req, res) {
-    axios.get("https://www.nytimes.com/").then(function(response) {
+    axios.get("https://editorial.rottentomatoes.com/guide/best-netflix-movies-to-watch-right-now/").then(function(response) {
         var $ = cheerio.load(response.data);
-        var results = [];
+        
+        $(".countdown-item").each(function(i, element) {
+            var results = {};
 
-        $(".eqveam60").each(function(i, element) {
-            var title = $(element).text();
-            var caption = $(element).find(".css-1pfq5u").text();
-            var link = $(element).find('a').attr("href");
+            results.movieTitle = $(element)
+                .find("h2 a")
+                .text();
+            results.posterImg = $(element)
+                .find(".article_poster")
+                .attr("src");
+            results.rating = $(element)
+                .find(".tMeterScore")
+                .text();
+            results.link = $(element)
+                .find('h2 a')
+                .attr("href");
 
-            results.push({
-                title: title,
-                caption: caption,
-                link: link
-            });
-
-            db.Article.create(results)
-            .then(function(dbArticle) {
-                console.log(dbArticle);
+            db.Movie.create(results)
+            .then(function(dbMovie) {
+                // console.log(dbMovie);
             })
             .catch(function(err) {
                 console.log(err)
@@ -52,43 +57,70 @@ app.get("/scrape", function(req, res) {
     });
 });
 
-app.get("/articles", function(req, res) {
-    db.Article.find({})
-        .then(function(dbArticle) {
-            res.json(dbArticle);
+app.get("/movies", function(req, res) {
+    db.Movie.find({})
+        .then(function(dbMovie) {
+            // console.log(dbMovie);
+            res.json(dbMovie);
         })
         .catch(function(err) {
             res.json(err)
         });
 });
 
-app.get("/articles/:id", function(req, res) {
-    db.Article.findOne({ _id: req.params.id })
+app.get("/movies/:id", function(req, res) {
+    db.Movie.findOne({ _id: req.params.id })
     .populate("note")
-    .then(function(dbArticle) {
-        res.json(dbArticle);
+    .then(function(dbMovie) {
+        res.json(dbMovie);
     })
     .catch(function(err) {
         res.json(err);
     });
 });
 
-app.post("/articles/:id", function(req, res) {
+app.post("/movies/:id", function(req, res) {
     db.Note.create(req.body)
         .then(function(dbNote) {
-            return db.Article.findOneAndUpdate({ _id: req.params.id }, { $push: { note: dbNote._id } }, { new: true });
+            return db.Movie.findOneAndUpdate({ _id: req.params.id }, { $push: { note: dbNote._id } }, { new: true });
         })
-        .then(function(dbArticle) {
-            res.json(dbArticle);
+        .then(function(dbMovie) {
+            res.json(dbMovie);
         })
         .catch(function(err) {
             res.json(err);
         });
 });
 
-app.delete("/articles/:id", function(req, res) {
-    db.findOneAndRemove()
+app.delete("/movies/:id", function(req, res) {
+    db.Movie.findOneAndRemove({ _id: req.params.id })
+    .then(function(dbNote) {
+        return db.Movie.findOneAndUpdate({ _id: req.params.id }, { $pull: { note: dbNote._id } }, { new: true });
+    })
+    .then(function(dbMovie) {
+        res.json(dbMovie);
+    })
+    .catch(function(err) {
+        res.json(err);
+    });
 });
+
+app.get("/clearall", function(req, res) {
+    db.Movie.remove({}, function(error, response) {
+      // Log any errors to the console
+      if (error) {
+        console.log(error);
+        res.send(error);
+      }
+      else {
+        // Otherwise, send the mongojs response to the browser
+        // This will fire off the success function of the ajax request
+        console.log(response);
+        res.send(response);
+      }
+    });
+  });
+  
 
 app.listen(PORT, function() {
     console.log("App running on port " + PORT + "!");
