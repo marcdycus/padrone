@@ -23,6 +23,10 @@ mongoose.connect("mongodb://localhost/mongoHeadlines", { useNewUrlParser: true }
 
 // mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
+app.get('/', function(req, res) {
+    res.sendFile(path.join(__dirname + './public/index.html'));
+});
+
 app.get("/scrape", function(req, res) {
     axios.get("https://editorial.rottentomatoes.com/guide/best-netflix-movies-to-watch-right-now/").then(function(response) {
         var $ = cheerio.load(response.data);
@@ -52,7 +56,7 @@ app.get("/scrape", function(req, res) {
             });
         });
 
-        res.send("Scrape Complete");
+        // res.send("Scrape Complete");
         
     });
 });
@@ -116,7 +120,7 @@ app.get("/clearall", function(req, res) {
         // Otherwise, send the mongojs response to the browser
         // This will fire off the success function of the ajax request
         console.log(response);
-        res.send(response);
+        // res.send(response);
       }
     });
   });

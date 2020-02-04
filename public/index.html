@@ -4,35 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./assets/style/style.css">
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans|Playfair+Display+SC&display=swap" rel="stylesheet">
     <title>Scrape Top Movies</title>
 </head>
 <body>
     <header>
         <h1>Mongo Scraper</h1>
         <ul class="nav nav-pills nav-fill bg-dark">
-                <li class="nav-item">
+                <!-- <li class="nav-item">
                     <a class="nav-link" href="/">Home</a>
-                </li>
+                </li> -->
                 <li class="nav-item">
                     <a class="nav-link" href="/movies">Saved Movies</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/scrape">New Scrape</a>
+                    <a class="nav-link" id="scrape" href="/scrape">New Scrape</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/clearall">clear everything</a>
+                    <a class="nav-link" href="/clearall">Clear Everything</a>
                 </li>
             </ul>
     </header>
-
+        <div id="notes"></div>
         <div id="movies"></div>
-        <div class="modal">
-            <div class="modalContent">
-                <form class="modalForm">
-
-                </form>
-            </div>
-        </div>
+        
+        
         
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="./assets/script/app.js"></script>

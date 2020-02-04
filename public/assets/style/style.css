@@ -1,0 +1,49 @@
+body {
+    font-family: 'Josefin Sans', sans-serif;
+    width: 100%;
+    margin: 0;
+}
+
+h1 {
+    text-align: center;
+    font-family: 'Playfair Display SC', serif;
+    font-weight: 100;
+    font-size: 40px;
+    background-color: rgb(228, 0, 0);
+    margin: 0;
+    padding: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+    line-height: 20px;
+}
+
+a:hover {
+   background-color: rgb(228, 228, 228);
+}
+
+ul {
+    list-style: none;
+    text-align: center;
+    padding: 0px;
+}
+
+li {
+    display: inline;
+    margin: 20px;
+}
+
+.movies {
+    display: inline;
+    float: left;
+    margin: 30px;
+    max-width: 200px;
+    height: 400px;
+}
+
+button {
+    position: absolute;
+    margin: 5px;
+}
