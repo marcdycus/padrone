@@ -9,7 +9,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.8.10",
     "morgan": "^1.9.1",
-    "node": "^13.7.0"
+    "node": "^13.7.0",
+    "path": "^0.12.7"
   },
   "devDependencies": {},
   "scripts": {

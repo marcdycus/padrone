@@ -16,12 +16,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
 
-// mongoose.connect(MONGODB_URI);
-mongoose.connect("mongodb://localhost/mongoHeadlines", { useNewUrlParser: true });
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
-// mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
 
 app.get('/', function(req, res) {
     res.sendFile(path.join(__dirname + './public/index.html'));
@@ -121,6 +119,7 @@ app.get("/clearall", function(req, res) {
         // This will fire off the success function of the ajax request
         console.log(response);
         // res.send(response);
+        // res.sendFile(path.join(__dirname + './public/index.html'));
       }
     });
   });
